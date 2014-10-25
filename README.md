@@ -42,10 +42,25 @@ Elasticsearch に任意のクエリを投げて出力された結果を csv で�
 ./es-output2.csv.rb -f field1,field2 -s field1 -q Query -r 5000
 ~~~
 
-また、デフォルトで CSV ファイルはカレントディレクトリの `test.csv` に出力されますが、ソースコード内の `config` メソッドのハッシュ定義を修正することで任意のファイルに出力することが可能です。以下は `config` メソッド内で変更可能なパラメータです。
+また、デフォルトで CSV ファイルはカレントディレクトリの `test.csv` に出力されますが、ソースコード内の `config` メソッドのハッシュ定義を修正することで任意のファイルに出力することが可能です。
+
+~~~
+def config
+  {
+    :host => "127.0.0.1",
+    :port => 9200,
+    :date => 1,
+    :index_prefix => "test_index",
+    :type_prefix => "test",
+    :csv_file => "test.csv"
+  }
+end
+~~~
+
+以下はハッシュキーと値の用途です。
 
 | キー | 用途 |
-|:---|:---|:---|
+|:---|:---|
 | host | Elasticsearch のホストを指定します |
 | port | Elasticsearch のポートを指定します |
 | date | 今日から N 日前のインデックスの日付を指定します |
