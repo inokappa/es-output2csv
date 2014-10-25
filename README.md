@@ -1,4 +1,4 @@
-## Elasticsearch の検索結果を無理やり csv で書きだすスクリプト
+## Elasticsearch の検索結果を無理やり csv に書きだすスクリプト
 
 ### これは何？
 
