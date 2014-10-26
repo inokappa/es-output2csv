@@ -74,7 +74,7 @@ end
 
 ### 動作デモ
 
-![](output.gif)
+![](https://raw.githubusercontent.com/inokappa/es-output2csv/master/output.gif)
 
 ***
 
