@@ -36,9 +36,12 @@ end
 
 # Elasticsearch へのリクエスト
 def get_respons(request)
-  Net::HTTP.start(request_uri.host, request_uri.port) do |http|
-    http.read_timeout = 30
-    http.request(request)
+  begin
+    Net::HTTP.start(request_uri.host, request_uri.port, :open_timeout => 10) do |http|
+      http.request(request)
+    end
+  rescue => ex
+    puts ex.message
   end
 end
 
@@ -46,28 +49,39 @@ end
 def check_max_document_count
   req = request_uri.path + "_cat/count/" + "#{index_name}"
   request = Net::HTTP::Get.new(req)
-  res = get_respons request
-  count = res.body.split(nil) 
-  count[2]
+  begin
+    res = get_respons request
+    count = res.body.split(nil)
+    count[2]
+  rescue => ex
+    puts ex.message
+  end
 end
 
 # ドキュメントのフィールド名を取得する
 def check_document_field_name
   req = request_uri.path + "#{index_name}" + "/_mapping"
   request = Net::HTTP::Get.new(req)
-  res = get_respons request
-  json = JSON.parse(res.body)
-  fields = json.values[0]["mappings"][config[:type_prefix]]["properties"].keys
+  begin
+    res = get_respons request
+    json = JSON.parse(res.body)
+    fields = json.values[0]["mappings"][config[:type_prefix]]["properties"].keys
+  rescue => ex
+    puts ex.message
+  end
 end
 
 # ドキュメントを検索して結果を返す
-#def search_document(f,s,q)
 def search_document(*params)
   req = request_uri.path + "#{index_name}" + "/_search"
   request = Net::HTTP::Post.new(req, initheader = {'Content-Type' =>'application/json'})
-  request.body = { from: 0, size: params[3], fields: params[0].split(","), query:{ simple_query_string: { fields: params[1].split(","), query: params[2] }}}.to_json
-  res = get_respons request
-  JSON.parse(res.body)
+  begin
+    request.body = { from: 0, size: params[3], fields: params[0].split(","), query:{ simple_query_string: { fields: params[1].split(","), query: params[2] }}}.to_json
+    res = get_respons request
+    JSON.parse(res.body)
+  rescue => ex
+    puts ex.message
+  end
 end
 
 # 検索結果を利用して csv で出力する
@@ -87,7 +101,6 @@ end
 # main
 params = ARGV.getopts('f:s:q:r:c')
 if params["c"]
-  puts "\n"
   puts "ドキュメント数:" 
   p check_max_document_count
   puts "\n"
@@ -96,6 +109,5 @@ if params["c"]
   puts "\n"
 else
   res = search_document(params["f"],params["s"],params["q"],params["r"])
-  p res
   convert_to_csv(res)
 end
