@@ -75,6 +75,7 @@ end
 ### 動作デモ
 
 ![](https://raw.githubusercontent.com/inokappa/es-output2csv/master/output.gif)
+gif アニメーションでの動作デモです。止まっている場合にはリロードしてやって下さい。m(__)m
 
 ***
 
