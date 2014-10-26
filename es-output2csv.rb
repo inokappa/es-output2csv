@@ -73,9 +73,13 @@ end
 # 検索結果を利用して csv で出力する
 def convert_to_csv(res)
   CSV.open("#{config[:csv_file]}", "w") do |csv| 
-    csv << res["hits"]["hits"][1]["fields"].keys
+    csv << res["hits"]["hits"][0]["fields"].keys
     res["hits"]["hits"].each do |v|
-      csv << v["fields"].values.flatten 
+      record = []
+      v["fields"].values.flatten.each do |r|
+        record << r.strip.split(",")
+      end
+      csv << record.flatten
     end
   end  
 end
