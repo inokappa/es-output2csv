@@ -8,11 +8,11 @@ require 'optparse'
 
 def config
   {
-    :host => "127.0.0.1",
+    :host => "your_elasticsearch_host",
     :port => 9200,
-    :date => 1,
-    :index_prefix => "test_index",
-    :type_prefix => "test",
+    :date => 0,
+    :index_prefix => "your_index_name",
+    :type_prefix => "your_type_name",
     :csv_file => "test.csv"
   }
 end
@@ -87,11 +87,15 @@ end
 # main
 params = ARGV.getopts('f:s:q:r:c')
 if params["c"]
+  puts "\n"
   puts "ドキュメント数:" 
   p check_max_document_count
+  puts "\n"
   puts "ドキュメントフィールド一覧:"
   p check_document_field_name
+  puts "\n"
 else
   res = search_document(params["f"],params["s"],params["q"],params["r"])
+  p res
   convert_to_csv(res)
 end
